@@ -5,6 +5,7 @@ import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-shrine.jpg";
 
 const airports = [
@@ -14,6 +15,7 @@ const airports = [
 ];
 
 export const HeroSection = () => {
+  const navigate = useNavigate();
   const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
     from: new Date(2026, 0, 4),
     to: new Date(2026, 0, 11),
@@ -27,8 +29,7 @@ export const HeroSection = () => {
   const [isExitOpen, setIsExitOpen] = useState(false);
 
   const handleSearch = () => {
-    console.log("Search:", { dateRange, adults, children, entryPoint, exitPoint });
-    // Add navigation or search logic here
+    navigate("/plan-ziarat");
   };
 
   return (
@@ -52,13 +53,18 @@ export const HeroSection = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-wrap justify-center gap-4 mb-12">
-            <Button size="lg" className="px-8 py-6 text-lg font-semibold btn-animated hover:scale-105 transition-transform duration-300">
+            <Button 
+              size="lg" 
+              className="px-8 py-6 text-lg font-semibold btn-animated hover:scale-105 transition-transform duration-300"
+              onClick={() => navigate("/plan-ziarat")}
+            >
               PLAN ZIARAT
             </Button>
             <Button
               size="lg"
               variant="outline"
               className="px-8 py-6 text-lg font-semibold bg-white/10 border-white/30 text-white hover:bg-white hover:text-foreground hover:scale-105 transition-all duration-300"
+              onClick={() => document.getElementById('hotels')?.scrollIntoView({ behavior: 'smooth' })}
             >
               🔍 SEARCH HOTEL
             </Button>

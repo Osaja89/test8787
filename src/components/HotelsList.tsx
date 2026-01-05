@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const filters = ["All", "Karbala", "Najaf", "Baghdad", "Kazmain", "Samarra"];
 
@@ -45,6 +46,7 @@ const hotels = [
 
 export const HotelsList = () => {
   const [activeFilter, setActiveFilter] = useState("All");
+  const { ref, isVisible } = useScrollAnimation(0.1);
 
   const filteredHotels = activeFilter === "All" 
     ? hotels 
@@ -52,8 +54,12 @@ export const HotelsList = () => {
 
   return (
     <section id="hotels" className="py-20 bg-muted/30">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+      <div className="container mx-auto px-4" ref={ref}>
+        <div 
+          className={`text-center mb-12 transition-all duration-700 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Browse Hotels By City
           </h2>
@@ -63,14 +69,18 @@ export const HotelsList = () => {
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex flex-wrap justify-center gap-2 mb-10">
+        <div 
+          className={`flex flex-wrap justify-center gap-2 mb-10 transition-all duration-700 delay-100 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
           {filters.map((filter) => (
             <Button
               key={filter}
               variant={activeFilter === filter ? "default" : "outline"}
               size="sm"
               onClick={() => setActiveFilter(filter)}
-              className="rounded-full"
+              className="rounded-full transition-all duration-300 hover:scale-105"
             >
               {filter}
             </Button>
@@ -79,26 +89,36 @@ export const HotelsList = () => {
 
         {/* Hotels Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filteredHotels.map((hotel) => (
-            <Card key={hotel.id} className="overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300">
+          {filteredHotels.map((hotel, index) => (
+            <Card 
+              key={hotel.id} 
+              className={`hotel-card cursor-pointer transition-all duration-700 ${
+                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              }`}
+              style={{ transitionDelay: isVisible ? `${(index + 2) * 100}ms` : "0ms" }}
+            >
               <div className="relative overflow-hidden">
                 <img
                   src={hotel.image}
                   alt={hotel.name}
-                  className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="w-full h-48 object-cover hotel-image"
                 />
-                <span className={`absolute top-3 left-3 ${hotel.badgeClass}`}>
+                <span className={`absolute top-3 left-3 ${hotel.badgeClass} transition-transform duration-300 hover:scale-110`}>
                   {hotel.badge}
                 </span>
               </div>
               <CardContent className="p-4">
-                <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
+                <h3 className="font-semibold text-lg mb-2 transition-colors duration-300 group-hover:text-primary">
                   {hotel.name}
                 </h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   {hotel.location}
                 </p>
-                <Button variant="outline" size="sm" className="w-full group-hover:bg-primary group-hover:text-primary-foreground">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full transition-all duration-300 hover:bg-primary hover:text-primary-foreground hover:scale-[1.02]"
+                >
                   View Detail
                 </Button>
               </CardContent>

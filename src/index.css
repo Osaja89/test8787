@@ -121,7 +121,15 @@
 
   .city-card {
     @apply flex flex-col items-center justify-center p-6 rounded-xl bg-card border border-border
-           transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/30;
+           transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/50;
+  }
+
+  .city-card:hover .city-icon {
+    @apply scale-125;
+  }
+
+  .city-icon {
+    @apply transition-transform duration-500 ease-out;
   }
 
   .hotel-badge-luxury {
@@ -142,16 +150,37 @@
 
   .feature-card {
     @apply p-8 rounded-2xl bg-card border border-border text-center
-           transition-all duration-300 hover:shadow-lg hover:border-primary/20;
+           transition-all duration-500 hover:shadow-2xl hover:border-primary/30 hover:-translate-y-1;
+  }
+
+  .feature-card:hover .feature-icon {
+    @apply scale-110 rotate-3;
+  }
+
+  .feature-icon {
+    @apply transition-all duration-500 ease-out;
   }
 
   .nav-link {
-    @apply text-sm font-medium tracking-wide transition-colors duration-200
-           text-white/80 hover:text-primary;
+    @apply text-sm font-medium tracking-wide transition-all duration-300
+           text-white/80 hover:text-primary relative;
+  }
+
+  .nav-link::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300;
+  }
+
+  .nav-link:hover::after {
+    @apply w-full;
   }
 
   .nav-link-active {
     @apply text-primary;
+  }
+
+  .nav-link-active::after {
+    @apply w-full;
   }
 
   .search-box {
@@ -160,6 +189,56 @@
 
   .search-field {
     @apply flex-1 min-w-[180px] px-4 py-3 bg-muted/50 rounded-lg border-0
+           transition-all duration-300 hover:bg-muted focus:bg-white focus:shadow-md
            focus:outline-none focus:ring-2 focus:ring-primary/20;
+  }
+
+  .hotel-card {
+    @apply overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-2;
+  }
+
+  .hotel-card:hover .hotel-image {
+    @apply scale-110;
+  }
+
+  .hotel-image {
+    @apply transition-transform duration-700 ease-out;
+  }
+
+  /* Scroll animations */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .stagger-1 { transition-delay: 0.1s; }
+  .stagger-2 { transition-delay: 0.2s; }
+  .stagger-3 { transition-delay: 0.3s; }
+  .stagger-4 { transition-delay: 0.4s; }
+  .stagger-5 { transition-delay: 0.5s; }
+
+  /* Button hover effects */
+  .btn-animated {
+    @apply relative overflow-hidden transition-all duration-300;
+  }
+
+  .btn-animated::before {
+    content: '';
+    @apply absolute inset-0 bg-white/20 translate-x-[-100%] transition-transform duration-500;
+  }
+
+  .btn-animated:hover::before {
+    @apply translate-x-[100%];
+  }
+
+  /* Social icon hover */
+  .social-icon {
+    @apply transition-all duration-300 hover:scale-110 hover:-translate-y-1;
   }
 }

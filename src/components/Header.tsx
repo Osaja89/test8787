@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Menu, X, Phone, Mail, Globe } from "lucide-react";
+import { Menu, X, Phone, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link, useLocation } from "react-router-dom";
 
 const navLinks = [
-  { name: "HOME", href: "#", active: true },
+  { name: "HOME", href: "/" },
   { name: "ABOUT", href: "#about" },
-  { name: "PLAN YOUR ZIARAT", href: "#plan" },
+  { name: "PLAN YOUR ZIARAT", href: "/plan-ziarat" },
   { name: "PACKAGES", href: "#packages" },
   { name: "HOTELS", href: "#hotels" },
   { name: "CITIES & ZIARAT", href: "#cities" },
@@ -14,6 +15,12 @@ const navLinks = [
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+
+  const isActive = (href: string) => {
+    if (href.startsWith("#")) return false;
+    return location.pathname === href;
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
@@ -45,25 +52,35 @@ export const Header = () => {
       {/* Main Navigation */}
       <nav className="bg-header/95 backdrop-blur-sm text-header-foreground py-4 px-4">
         <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <div className="text-2xl font-bold tracking-tight">
               <span className="text-primary">ZIARAT</span> PLANNER
             </div>
             <div className="hidden md:block text-xs text-white/60 uppercase tracking-widest">
               Embark On Spiritual Journeys
             </div>
-          </div>
+          </Link>
 
           {/* Desktop Nav */}
           <div className="hidden lg:flex items-center gap-6">
             {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className={`nav-link ${link.active ? "nav-link-active" : ""}`}
-              >
-                {link.name}
-              </a>
+              link.href.startsWith("#") ? (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="nav-link"
+                >
+                  {link.name}
+                </a>
+              ) : (
+                <Link
+                  key={link.name}
+                  to={link.href}
+                  className={`nav-link ${isActive(link.href) ? "nav-link-active" : ""}`}
+                >
+                  {link.name}
+                </Link>
+              )
             ))}
           </div>
 
@@ -83,14 +100,25 @@ export const Header = () => {
           <div className="lg:hidden mt-4 pb-4 border-t border-white/10">
             <div className="flex flex-col gap-2 pt-4">
               {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  className={`nav-link py-2 ${link.active ? "nav-link-active" : ""}`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {link.name}
-                </a>
+                link.href.startsWith("#") ? (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    className="nav-link py-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {link.name}
+                  </a>
+                ) : (
+                  <Link
+                    key={link.name}
+                    to={link.href}
+                    className={`nav-link py-2 ${isActive(link.href) ? "nav-link-active" : ""}`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {link.name}
+                  </Link>
+                )
               ))}
             </div>
           </div>

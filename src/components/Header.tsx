@@ -7,7 +7,7 @@ const navLinks = [
   { name: "HOME", href: "/" },
   { name: "ABOUT", href: "#about" },
   { name: "PLAN YOUR ZIARAT", href: "/plan-ziarat" },
-  { name: "PACKAGES", href: "#packages" },
+  { name: "PACKAGES", href: "/packages" },
   { name: "HOTELS", href: "/hotels" },
   { name: "CITIES & ZIARAT", href: "#cities" },
   { name: "CONTACT", href: "#contact" },

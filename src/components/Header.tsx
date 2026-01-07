@@ -16,6 +16,7 @@ const navLinks = [
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const isHomepage = location.pathname === "/";
 
   const isActive = (href: string) => {
     if (href.startsWith("#")) return false;
@@ -25,7 +26,7 @@ export const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       {/* Top Bar */}
-      <div className="bg-header/80 backdrop-blur-sm text-header-foreground py-2 px-4">
+      <div className={`${isHomepage ? "bg-transparent" : "bg-header"} backdrop-blur-sm text-header-foreground py-2 px-4`}>
         <div className="container mx-auto flex justify-between items-center text-sm">
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-1">
@@ -50,7 +51,7 @@ export const Header = () => {
       </div>
 
       {/* Main Navigation */}
-      <nav className="bg-transparent backdrop-blur-sm text-header-foreground py-4 px-4">
+      <nav className={`${isHomepage ? "bg-transparent" : "bg-header/95"} backdrop-blur-sm text-header-foreground py-4 px-4`}>
         <div className="container mx-auto flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2">
             <div className="text-2xl font-bold tracking-tight">

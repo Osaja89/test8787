@@ -12,57 +12,95 @@ interface TripData {
   travelers: number;
 }
 
-const packages = [
-  {
-    id: "economy",
-    name: "ECONOMY PACKAGE",
-    price: 460,
-    features: [
-      "3-STAR ACCOMMODATION",
-      "SHARED BUS TRANSPORT",
-      "BREAKFAST INCLUDED",
-      "GROUP GUIDE",
-    ],
-    highlighted: false,
+// Base prices per day per person
+const BASE_PRICES = {
+  economy: {
+    perDayPerPerson: 50,
+    perActivity: 5,
+    perCity: 15,
   },
-  {
-    id: "standard",
-    name: "STANDARD PACKAGE",
-    price: 740,
-    features: [
-      "4-STAR HOTELS (NEAR HARAM)",
-      "PRIVATE SALON CAR",
-      "BREAKFAST & DINNER",
-      "DEDICATED GUIDE",
-    ],
-    highlighted: false,
+  standard: {
+    perDayPerPerson: 85,
+    perActivity: 8,
+    perCity: 25,
   },
-  {
-    id: "deluxe",
-    name: "DELUXE PACKAGE",
-    price: 1400,
-    features: [
-      "5-STAR LUXURY HOTELS",
-      "VIP SUV TRANSPORT",
-      "FULL BOARD (3 MEALS)",
-      "PERSONAL SCHOLAR GUIDE",
-    ],
-    highlighted: true,
+  deluxe: {
+    perDayPerPerson: 160,
+    perActivity: 15,
+    perCity: 40,
   },
-];
+};
+
+const packageFeatures = {
+  economy: [
+    "3-STAR ACCOMMODATION",
+    "SHARED BUS TRANSPORT",
+    "BREAKFAST INCLUDED",
+    "GROUP GUIDE",
+  ],
+  standard: [
+    "4-STAR HOTELS (NEAR HARAM)",
+    "PRIVATE SALON CAR",
+    "BREAKFAST & DINNER",
+    "DEDICATED GUIDE",
+  ],
+  deluxe: [
+    "5-STAR LUXURY HOTELS",
+    "VIP SUV TRANSPORT",
+    "FULL BOARD (3 MEALS)",
+    "PERSONAL SCHOLAR GUIDE",
+  ],
+};
 
 const Checkout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
 
-  // Default trip data (would come from PlanZiarat in real implementation)
+  // Get trip data from PlanZiarat
   const tripData: TripData = location.state?.tripData || {
     duration: 8,
     cities: 2,
     activities: 0,
     travelers: 1,
   };
+
+  // Calculate dynamic prices based on trip data
+  const calculatePrice = (tier: "economy" | "standard" | "deluxe") => {
+    const pricing = BASE_PRICES[tier];
+    const { duration, cities, activities, travelers } = tripData;
+    
+    // Base calculation: (days × per day rate × travelers) + (activities × activity rate) + (cities × city rate)
+    const basePrice = duration * pricing.perDayPerPerson * travelers;
+    const activityPrice = activities * pricing.perActivity * travelers;
+    const cityPrice = cities * pricing.perCity * travelers;
+    
+    return Math.round(basePrice + activityPrice + cityPrice);
+  };
+
+  const packages = [
+    {
+      id: "economy",
+      name: "ECONOMY PACKAGE",
+      price: calculatePrice("economy"),
+      features: packageFeatures.economy,
+      highlighted: false,
+    },
+    {
+      id: "standard",
+      name: "STANDARD PACKAGE",
+      price: calculatePrice("standard"),
+      features: packageFeatures.standard,
+      highlighted: false,
+    },
+    {
+      id: "deluxe",
+      name: "DELUXE PACKAGE",
+      price: calculatePrice("deluxe"),
+      features: packageFeatures.deluxe,
+      highlighted: true,
+    },
+  ];
 
   const handleSelectPlan = (packageId: string) => {
     setSelectedPackage(packageId);

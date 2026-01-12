@@ -1,11 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Calendar, Users, MapPin, ChevronRight, ChevronDown, ChevronLeft, Plus, List, Grid, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { format, addDays, eachDayOfInterval } from "date-fns";
+import { format, addDays, eachDayOfInterval, differenceInDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
@@ -51,6 +52,7 @@ const getIslamicDate = (date: Date) => {
 };
 
 const PlanZiarat = () => {
+  const navigate = useNavigate();
   const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
     from: new Date(2026, 0, 4),
     to: new Date(2026, 0, 11),
@@ -66,6 +68,29 @@ const PlanZiarat = () => {
   const [isPassengerOpen, setIsPassengerOpen] = useState(false);
   const [isEntryOpen, setIsEntryOpen] = useState(false);
   const [isExitOpen, setIsExitOpen] = useState(false);
+
+  // Calculate trip stats
+  const tripDuration = dateRange.from && dateRange.to 
+    ? differenceInDays(dateRange.to, dateRange.from) + 1 
+    : 0;
+  const totalTravelers = adults + children;
+  const uniqueCities = new Set(Object.values(dayPlans).map(p => p.stayCity).filter(Boolean));
+  const totalActivities = Object.values(dayPlans).reduce((acc, p) => acc + (p.ziarats?.length || 0), 0);
+
+  const handleCheckout = () => {
+    navigate("/checkout", {
+      state: {
+        tripData: {
+          duration: tripDuration,
+          cities: uniqueCities.size || 2,
+          activities: totalActivities,
+          travelers: totalTravelers,
+        },
+        dateRange,
+        dayPlans,
+      },
+    });
+  };
 
   const tripDays = dateRange.from && dateRange.to
     ? eachDayOfInterval({ start: addDays(dateRange.from, -1), end: dateRange.to })
@@ -488,7 +513,7 @@ const PlanZiarat = () => {
             <Plus className="w-5 h-5 mr-2" />
             Add Ziarat
           </Button>
-          <Button size="lg" className="px-8">
+          <Button size="lg" className="px-8" onClick={handleCheckout}>
             Checkout
             <ChevronRight className="w-5 h-5 ml-2" />
           </Button>
